@@ -44,178 +44,210 @@ class Program
       switch (userResponse)
       {
         case 1:
-          Console.WriteLine("\n========== Register Customer ==========\n");
-
-          Console.Write("Enter First Name: ");
-          string firstName = Console.ReadLine();
-
-          Console.Write("Enter Middle Name (Press Enter if none): ");
-          string middleName = Console.ReadLine();
-
-          Console.Write("Enter Last Name: ");
-          string lastName = Console.ReadLine();
-
-          Console.Write("Enter Phone Number: ");
-          string phoneNumber = Console.ReadLine();
-
-          Console.Write("Enter Email Address: ");
-          string email = Console.ReadLine();
-
-          Console.WriteLine("\n----- Address Information -----");
-
-          Console.Write("House Number: ");
-          int houseNumber = int.Parse(Console.ReadLine());
-
-          Console.Write("Street: ");
-          string street = Console.ReadLine();
-
-          Console.Write("City: ");
-          string city = Console.ReadLine();
-
-          Console.Write("State: ");
-          string state = Console.ReadLine();
-
-          Console.Write("Country: ");
-          string country = Console.ReadLine();
-          try
-          {
-            Address customerAddress = new Address(houseNumber, street, city, state, country);
-            Customer user = bankingService.CreateCustomer(firstName, lastName, phoneNumber, email, customerAddress, middleName);
-            Console.WriteLine("\nCustomer registered successfully!");
-            Console.WriteLine($"Customer ID: {user.GetCustomerId()}");
-          }
-          catch(Exception ex)
-          {
-            Console.WriteLine(ex.Message);
-          }
+          RegisterCustomer(bankingService);
           break;
 
-
         case 2:
-          Console.WriteLine("\n========== Open Account ==========\n");
-
-          Console.Write("Enter Phone Number: ");
-          string customerPhoneNumber = Console.ReadLine();
-
-          Console.WriteLine("\n========== New Account Information ==========\n");
-
-          Console.Write("Enter Account Type (Savings/Current): ");
-          string accountType = Console.ReadLine();
-
-          Console.Write("Set a 4-digit PIN for your new account: ");
-          string accountPin = Console.ReadLine();
-          try
-          {
-            Customer client = bankingService.FindCustomerByPhoneNumber(customerPhoneNumber);
-            string customerId = client.GetCustomerId();
-            Account account = bankingService.OpenAccount(customerId, accountType, accountPin);
-            Console.WriteLine("\nAccount Created successfully!");
-            Console.WriteLine($"Account Number: {account.GetAccountNumber()}");
-          }catch(Exception ex)
-          {
-            Console.WriteLine(ex.Message);
-          }
+          OpenAccount(bankingService);
           break;
 
         case 3:
-          Console.WriteLine("\n========== Deposit ==========\n");
-          Console.Write("Enter Account Number: ");
-          string accountNumber = Console.ReadLine();
-          
-          Console.Write("Enter Deposit Amount: $");
-          decimal amount = decimal.Parse(Console.ReadLine());
-          try
-          {
-            Account account = bankingService.GetAccountByNumber(accountNumber);
-            bankingService.Deposit(accountNumber, amount);
-            Console.WriteLine();
-            Console.WriteLine("=========================================");
-            Console.WriteLine("      DEPOSIT SUCCESSFUL");
-            Console.WriteLine("=========================================");
-            Console.WriteLine($"Amount Deposited : ${amount:N2}");
-            Console.WriteLine($"Current Balance  : ${account.GetAccountBalance():N2}");
-            Console.WriteLine();
-            Console.WriteLine("Your account has been credited successfully.");
-            Console.WriteLine("Thank you for banking with C# Bank.");
-            Console.WriteLine("=========================================");
-          }catch(Exception ex)
-          {
-            Console.WriteLine(ex.Message);
-          }
+          Deposit(bankingService);
           break;
 
         case 4:
-          Console.WriteLine("\n========== Withdraw ==========\n");
-          Console.Write("Enter Account Number: ");
-          string acctNumber = Console.ReadLine();
-          
-          Console.Write("Enter Withdrawal Amount: ");
-          decimal withdrawalAmount = decimal.Parse(Console.ReadLine());
-          try
-          {
-            Account account = bankingService.GetAccountByNumber(acctNumber);
-            bankingService.Withdraw(acctNumber, withdrawalAmount);
-            Console.WriteLine();
-            Console.WriteLine("=========================================");
-            Console.WriteLine("      WITHDRAWAL SUCCESSFUL");
-            Console.WriteLine("=========================================");
-            Console.WriteLine($"Amount Withdrawn : ${withdrawalAmount:N2}");
-            Console.WriteLine($"Current Balance  : ${account.GetAccountBalance():N2}");
-            Console.WriteLine();
-            Console.WriteLine("Your account has been debited successfully.");
-            Console.WriteLine("Thank you for banking with C# Bank.");
-            Console.WriteLine("=========================================");
-          }catch(Exception ex)
-          {
-            Console.WriteLine(ex.Message);
-          }
+          Withdraw(bankingService);
           break;
 
         case 5:
-          Console.WriteLine("\n========== Customer Information ==========\n");
-
-          Console.Write("Enter Phone Number: ");
-          string number = Console.ReadLine();
-          try
-          {
-            Customer customer = bankingService.FindCustomerByPhoneNumber(number);
-            Console.WriteLine(customer.GetCustomerInfo());
-          }catch(Exception ex)
-          {
-            Console.WriteLine(ex.Message);
-          }
+          ViewCustomerInformation(bankingService);
           break;
 
         case 6:
-          Console.Write("Enter Account Number: ");
-          string accountNo = Console.ReadLine();
-          try
-          {
-            Account account = bankingService.GetAccountByNumber(accountNo);
-            Console.WriteLine("\n========== Account Information ==========\n");
-            Console.WriteLine(account.GetAccountInfo());
-          }catch(Exception ex)
-          {
-            Console.WriteLine(ex.Message);
-          }
+          ViewAccountInformation(bankingService);
           break;
 
         case 7:
-          Console.Write("Enter Account Number: ");
-          string customerAccountNumber = Console.ReadLine();
-          try
-          {
-            Account customerAccount = bankingService.GetAccountByNumber(customerAccountNumber);
-            Console.WriteLine("\n========== Transaction History ==========\n");
-            Console.WriteLine(customerAccount.GetTransactionHistory());
-          }catch(Exception ex)
-          {
-            Console.WriteLine(ex.Message);
-          }
+          ViewTransactionHistory(bankingService);
           break;
       }
     } while (userResponse != 0);
-    
+
     Console.WriteLine("\nThank you for banking with C# Bank. Goodbye!");
   }
+
+  static void RegisterCustomer(BankingService bankingService)
+  {
+    Console.WriteLine("\n========== Register Customer ==========\n");
+
+    Console.Write("Enter First Name: ");
+    string firstName = Console.ReadLine();
+    Console.Write("Enter Middle Name (Press Enter if none): ");
+    string middleName = Console.ReadLine();
+    Console.Write("Enter Last Name: ");
+    string lastName = Console.ReadLine();
+    Console.Write("Enter Phone Number: ");
+    string phoneNumber = Console.ReadLine();
+    Console.Write("Enter Email Address: ");
+    string email = Console.ReadLine();
+    Console.WriteLine("\n----- Address Information -----");
+    Console.Write("House Number: ");
+    int houseNumber = int.Parse(Console.ReadLine());
+    Console.Write("Street: ");
+    string street = Console.ReadLine();
+    Console.Write("City: ");
+    string city = Console.ReadLine();
+    Console.Write("State: ");
+    string state = Console.ReadLine();
+    Console.Write("Country: ");
+    string country = Console.ReadLine();
+    try
+    {
+      Address customerAddress = new Address(houseNumber, street, city, state, country);
+      Customer customer = bankingService.CreateCustomer(firstName, lastName, phoneNumber, email, customerAddress, middleName);
+      Console.WriteLine("\nCustomer registered successfully!");
+      Console.WriteLine($"Customer ID: {customer.GetCustomerId()}");
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine(ex.Message);
+    }
+  }
+
+  static void OpenAccount(BankingService bankingService)
+  {
+    Console.WriteLine("\n========== Open Account ==========\n");
+
+    Console.Write("Enter Phone Number: ");
+    string customerPhoneNumber = Console.ReadLine();
+
+    Console.WriteLine("\n========== New Account Information ==========\n");
+
+    Console.Write("Enter Account Type (Savings/Current): ");
+    string accountType = Console.ReadLine();
+
+    Console.Write("Set a 4-digit PIN for your new account: ");
+    string accountPin = Console.ReadLine();
+    try
+    {
+      Customer customer = bankingService.FindCustomerByPhoneNumber(customerPhoneNumber);
+      string customerId = customer.GetCustomerId();
+      Account account = bankingService.OpenAccount(customerId, accountType, accountPin);
+      Console.WriteLine("\nAccount Created successfully!");
+      Console.WriteLine($"Account Number: {account.GetAccountNumber()}");
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine(ex.Message);
+    }
+  }
+
+  static void Deposit(BankingService bankingService)
+  {
+    Console.WriteLine("\n========== Deposit ==========\n");
+
+    Console.Write("Enter Account Number: ");
+    string accountNumber = Console.ReadLine();
+
+    Console.Write("Enter Deposit Amount: $");
+    decimal amount = decimal.Parse(Console.ReadLine());
+    try
+    {
+      Account customerAccount = bankingService.GetAccountByNumber(accountNumber);
+      bankingService.Deposit(accountNumber, amount);
+      Console.WriteLine();
+      Console.WriteLine("=========================================");
+      Console.WriteLine("      DEPOSIT SUCCESSFUL");
+      Console.WriteLine("=========================================");
+      Console.WriteLine($"Amount Deposited : ${amount:N2}");
+      Console.WriteLine($"Current Balance  : ${customerAccount.GetAccountBalance():N2}");
+      Console.WriteLine();
+      Console.WriteLine("Your account has been credited successfully.");
+      Console.WriteLine("Thank you for banking with C# Bank.");
+      Console.WriteLine("=========================================");
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine(ex.Message);
+    }
+  }
+
+  static void Withdraw(BankingService bankingService)
+  {
+    Console.WriteLine("\n========== Withdraw ==========\n");
+    Console.Write("Enter Account Number: ");
+    string accountNumber = Console.ReadLine();
+
+    Console.Write("Enter Withdrawal Amount: ");
+    decimal withdrawalAmount = decimal.Parse(Console.ReadLine());
+    try
+    {
+      Account account = bankingService.GetAccountByNumber(accountNumber);
+      bankingService.Withdraw(accountNumber, withdrawalAmount);
+      Console.WriteLine();
+      Console.WriteLine("=========================================");
+      Console.WriteLine("      WITHDRAWAL SUCCESSFUL");
+      Console.WriteLine("=========================================");
+      Console.WriteLine($"Amount Withdrawn : ${withdrawalAmount:N2}");
+      Console.WriteLine($"Current Balance  : ${account.GetAccountBalance():N2}");
+      Console.WriteLine();
+      Console.WriteLine("Your account has been debited successfully.");
+      Console.WriteLine("Thank you for banking with C# Bank.");
+      Console.WriteLine("=========================================");
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine(ex.Message);
+    }
+  }
+
+  static void ViewCustomerInformation(BankingService bankingService)
+  {
+    Console.WriteLine("\n========== Customer Information ==========\n");
+
+    Console.Write("Enter Phone Number: ");
+    string phoneNumber = Console.ReadLine();
+    try
+    {
+      Customer customer = bankingService.FindCustomerByPhoneNumber(phoneNumber);
+      Console.WriteLine(customer.GetCustomerInfo());
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine(ex.Message);
+    }
+  }
+
+  static void ViewAccountInformation(BankingService bankingService)
+  {
+    Console.Write("Enter Account Number: ");
+    string accountNumber = Console.ReadLine();
+    try
+    {
+      Account account = bankingService.GetAccountByNumber(accountNumber);
+      Console.WriteLine("\n========== Account Information ==========\n");
+      Console.WriteLine(account.GetAccountInfo());
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine(ex.Message);
+    }
+  }
+
+  static void ViewTransactionHistory(BankingService bankingService)
+  {
+    Console.Write("Enter Account Number: ");
+    string customerAccountNumber = Console.ReadLine();
+    try
+    {
+      Account customerAccount = bankingService.GetAccountByNumber(customerAccountNumber);
+      Console.WriteLine("\n========== Transaction History ==========\n");
+      Console.WriteLine(customerAccount.GetTransactionHistory());
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine(ex.Message);
+    }
+  }
+  
 }

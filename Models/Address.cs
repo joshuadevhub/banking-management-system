@@ -4,13 +4,13 @@ using System;
 
 public class Address
 {
-  private int _houseNumber;
+  private string _houseNumber;
   private string _street;
   private string _city;
   private string _state;
   private string _country;
 
-  public Address(int houseNumber, string street, string city, string state, string country)
+  public Address(string houseNumber, string street, string city, string state, string country)
   {
     _houseNumber = houseNumber;
     _street = street;
@@ -19,7 +19,7 @@ public class Address
     _country = country;
   }
 
-  public int GetHouseNumber()
+  public string GetHouseNumber()
   {
     return _houseNumber;
   }

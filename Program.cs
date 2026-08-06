@@ -78,29 +78,21 @@ class Program
 
   static void RegisterCustomer(BankingService bankingService)
   {
-    Console.WriteLine("\n========== Register Customer ==========\n");
+    DisplaySectionHeading("Register Customer");
 
-    Console.Write("Enter First Name: ");
-    string firstName = Console.ReadLine();
-    Console.Write("Enter Middle Name (Press Enter if none): ");
-    string middleName = Console.ReadLine();
-    Console.Write("Enter Last Name: ");
-    string lastName = Console.ReadLine();
-    Console.Write("Enter Phone Number: ");
-    string phoneNumber = Console.ReadLine();
-    Console.Write("Enter Email Address: ");
-    string email = Console.ReadLine();
-    Console.WriteLine("\n----- Address Information -----");
-    Console.Write("House Number: ");
-    int houseNumber = int.Parse(Console.ReadLine());
-    Console.Write("Street: ");
-    string street = Console.ReadLine();
-    Console.Write("City: ");
-    string city = Console.ReadLine();
-    Console.Write("State: ");
-    string state = Console.ReadLine();
-    Console.Write("Country: ");
-    string country = Console.ReadLine();
+    string firstName = PromptString("Enter First Name");
+    string middleName = PromptString("Enter Middle Name (Press Enter if none)");
+    string lastName = PromptString("Enter Last Name");
+    string phoneNumber = PromptString("Enter Phone Number");
+    string email = PromptString("Enter Email Address");
+
+    DisplaySectionHeading("Address Information");
+
+    string houseNumber = PromptString("House Number");
+    string street = PromptString("Street");
+    string city = PromptString("City");
+    string state = PromptString("State");
+    string country = PromptString("Country");
     try
     {
       Address customerAddress = new Address(houseNumber, street, city, state, country);
@@ -116,18 +108,15 @@ class Program
 
   static void OpenAccount(BankingService bankingService)
   {
-    Console.WriteLine("\n========== Open Account ==========\n");
+    DisplaySectionHeading("Open Account");
 
-    Console.Write("Enter Phone Number: ");
-    string customerPhoneNumber = Console.ReadLine();
+    string customerPhoneNumber = PromptString("Enter Phone Number");
 
-    Console.WriteLine("\n========== New Account Information ==========\n");
+    DisplaySectionHeading("New Account Information");
 
-    Console.Write("Enter Account Type (Savings/Current): ");
-    string accountType = Console.ReadLine();
+    string accountType = PromptString("Enter Account Type (Savings/Current)");
 
-    Console.Write("Set a 4-digit PIN for your new account: ");
-    string accountPin = Console.ReadLine();
+    string accountPin = PromptString("Set a 4-digit PIN for your new account");
     try
     {
       Customer customer = bankingService.FindCustomerByPhoneNumber(customerPhoneNumber);
@@ -144,13 +133,11 @@ class Program
 
   static void Deposit(BankingService bankingService)
   {
-    Console.WriteLine("\n========== Deposit ==========\n");
+    DisplaySectionHeading("Deposit");
 
-    Console.Write("Enter Account Number: ");
-    string accountNumber = Console.ReadLine();
+    string accountNumber = PromptString("Enter Account Number");
 
-    Console.Write("Enter Deposit Amount: $");
-    decimal amount = decimal.Parse(Console.ReadLine());
+    decimal amount = PromptDecimal("Enter Deposit Amount", "$");
     try
     {
       Account customerAccount = bankingService.GetAccountByNumber(accountNumber);
@@ -174,12 +161,11 @@ class Program
 
   static void Withdraw(BankingService bankingService)
   {
-    Console.WriteLine("\n========== Withdraw ==========\n");
-    Console.Write("Enter Account Number: ");
-    string accountNumber = Console.ReadLine();
+    DisplaySectionHeading("Withdraw");
 
-    Console.Write("Enter Withdrawal Amount: ");
-    decimal withdrawalAmount = decimal.Parse(Console.ReadLine());
+    string accountNumber = PromptString("Enter Account Number");
+
+    decimal withdrawalAmount = PromptDecimal("Enter Withdrawal Amount", "$");
     try
     {
       Account account = bankingService.GetAccountByNumber(accountNumber);
@@ -203,10 +189,9 @@ class Program
 
   static void ViewCustomerInformation(BankingService bankingService)
   {
-    Console.WriteLine("\n========== Customer Information ==========\n");
+    DisplaySectionHeading("Customer Information");
 
-    Console.Write("Enter Phone Number: ");
-    string phoneNumber = Console.ReadLine();
+    string phoneNumber = PromptString("Enter Phone Number");
     try
     {
       Customer customer = bankingService.FindCustomerByPhoneNumber(phoneNumber);
@@ -220,12 +205,12 @@ class Program
 
   static void ViewAccountInformation(BankingService bankingService)
   {
-    Console.Write("Enter Account Number: ");
-    string accountNumber = Console.ReadLine();
+    DisplaySectionHeading("Account Information");
+
+    string accountNumber = PromptString("Enter Account Number");
     try
     {
       Account account = bankingService.GetAccountByNumber(accountNumber);
-      Console.WriteLine("\n========== Account Information ==========\n");
       Console.WriteLine(account.GetAccountInfo());
     }
     catch (Exception ex)
@@ -236,12 +221,12 @@ class Program
 
   static void ViewTransactionHistory(BankingService bankingService)
   {
-    Console.Write("Enter Account Number: ");
-    string customerAccountNumber = Console.ReadLine();
+    DisplaySectionHeading("Transaction History");
+
+    string customerAccountNumber = PromptString("Enter Account Number");
     try
     {
       Account customerAccount = bankingService.GetAccountByNumber(customerAccountNumber);
-      Console.WriteLine("\n========== Transaction History ==========\n");
       Console.WriteLine(customerAccount.GetTransactionHistory());
     }
     catch (Exception ex)
@@ -249,5 +234,41 @@ class Program
       Console.WriteLine(ex.Message);
     }
   }
+
+  static void DisplaySectionHeading(string heading)
+  {
+    Console.WriteLine($"\n========== {heading} ==========\n");
+  }
+
+  static string PromptString(string prompt)
+  {
+    while (true)
+    {
+      Console.Write($"{prompt}: ");
+      string input = Console.ReadLine();
+      if (!string.IsNullOrWhiteSpace(input))
+      {
+        return input;
+      }
+      Console.WriteLine("\nField cannot be empty. Please try again.");
+    }
+  }
   
+  static decimal PromptDecimal(string prompt, string symbol = "")
+  {
+    while (true)
+    {
+      Console.Write($"{prompt}: {symbol}");
+      string input = Console.ReadLine();
+
+      if (decimal.TryParse(input, out decimal userResponse))
+      {
+        return userResponse;
+      }
+      else
+      {
+        Console.WriteLine("\nInvalid Input. Please try again");
+      }
+    }
+  }
 }

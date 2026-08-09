@@ -2,6 +2,7 @@
 
 using System;
 using System.Text.RegularExpressions;
+using System.Text.Json.Serialization;
 
 public class Customer
 {
@@ -14,8 +15,8 @@ public class Customer
   private Address _address;
   private List<Account> _accounts = new List<Account>();
   private DateTime _dateRegistered;
-
-  public Customer(string customerId, string firstName, string lastName, string phoneNumber, string email, Address address, string middleName = "")
+  [JsonConstructor]
+  public Customer(string customerId, string firstName, string lastName, string phoneNumber, string email, Address address, DateTime dateRegistered, string middleName = "")
   {
     _customerId = customerId;
     ValidateName(firstName, "First Name");
@@ -29,12 +30,84 @@ public class Customer
     ValidateEmail(email);
     _email = email;
     _address = address;
-    _dateRegistered = DateTime.Now;
+    _dateRegistered =  dateRegistered;
   }
 
   public string GetCustomerId()
   {
     return _customerId;
+  }
+
+  public string CustomerId
+  {
+    get
+    {
+      return _customerId;
+    }
+  }
+
+  public string FirstName
+  {
+    get
+    {
+      return _firstName;
+    }
+  }
+
+  public string LastName
+  {
+    get
+    {
+      return _lastName;
+    }
+  }
+
+  public string MiddleName
+  {
+    get
+    {
+      return _middleName;
+    }
+  }
+
+  public string PhoneNumber
+  {
+    get
+    {
+      return _phoneNumber;
+    }
+  }
+
+  public string Email
+  {
+    get
+    {
+      return _email;
+    }
+  }
+
+  public DateTime DateRegistered
+  {
+    get
+    {
+      return _dateRegistered;
+    }
+  }
+  
+  public Address Address
+  {
+    get
+    {
+      return _address;
+    }
+  }
+
+  public List<Account> Accounts
+  {
+    get
+    {
+      return _accounts;
+    }
   }
 
   public string GetPhoneNumber()

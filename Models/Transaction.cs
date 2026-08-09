@@ -7,18 +7,66 @@ public class Transaction
   private string _transactionId;
   private string _transactionType;
   private decimal _amount;
-  private DateTime _transactionDate;
   private string _description;
   private decimal _balanceAfterTransaction;
+  private DateTime _transactionDate;
 
-  public Transaction(string transactionId,  string transactionType, decimal amount, DateTime transactionDate,  string description, decimal balanceAfterTran)
+  public Transaction(string transactionId, string transactionType, decimal amount, string description, decimal balanceAfterTransaction, DateTime? transactionDate = null)
   {
     _transactionId = transactionId;
     _transactionType = transactionType;
     _amount = amount;
-    _transactionDate = transactionDate;
     _description = description;
-    _balanceAfterTransaction = balanceAfterTran;
+    _balanceAfterTransaction = balanceAfterTransaction;
+    _transactionDate = transactionDate ?? DateTime.Now;
+  }
+  
+  public string TransactionId
+  {
+    get
+    {
+      return _transactionId;
+    }
+  }
+
+  public string TransactionType
+  {
+    get
+    {
+      return _transactionType;
+    }
+  }
+
+  public decimal Amount
+  {
+    get
+    {
+      return _amount;
+    }
+  }
+
+  public string Description
+  {
+    get
+    {
+      return _description;
+    }
+  }
+
+  public decimal BalanceAfterTransaction
+  {
+    get
+    {
+      return _balanceAfterTransaction;
+    }
+  }
+
+  public DateTime TransactionDate
+  {
+    get
+    {
+      return _transactionDate;
+    }
   }
   
   public string GetTransactionDetails()

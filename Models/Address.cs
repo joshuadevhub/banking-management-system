@@ -40,6 +40,46 @@ public class Address
     return _country;
   }
 
+  public string HouseNumber
+  {
+    get
+    {
+      return _houseNumber;
+    }
+  }
+
+  public string Street
+  {
+    get
+    {
+      return _street;
+    }
+  }
+
+  public string City
+  {
+    get
+    {
+      return _city;
+    }
+  }
+
+  public string State
+  {
+    get
+    {
+      return _state;
+    }
+  }
+
+  public string Country
+  {
+    get
+    {
+      return _country;
+    }
+  }
+
   public string GetFullAddress()
   {
     return $"{_houseNumber} {_street}, {_city}, {_state}, {_country}";

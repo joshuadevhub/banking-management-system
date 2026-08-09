@@ -13,31 +13,78 @@ public class Account
   private DateTime _dateCreated;
   private List<Transaction> _transactions = new List<Transaction>();
 
-  public Account(string acctNumber, string acctPin, string acctType)
+  public Account(string accountNumber, string accountPin, string accountType, DateTime? dateCreated = null)
   {
-    _accountNumber = acctNumber;
-    ValidatePin(acctPin);
-    _accountPin = acctPin;
+    _accountNumber = accountNumber;
+    ValidatePin(accountPin);
+    _accountPin = accountPin;
     _accountBalance = 0;
-    ValidateAccountType(acctType);
-    _accountType = acctType;
-    _dateCreated = DateTime.Now;
+    ValidateAccountType(accountType);
+    _accountType = accountType;
+    _dateCreated = dateCreated ?? DateTime.Now;
   }
 
-  public bool Deposit(decimal amount)
+  public string AccountNumber
+  {
+    get
+    {
+      return _accountNumber;
+    }
+  }
+
+  public string AccountPin
+  {
+    get
+    {
+      return _accountPin;
+    }
+  }
+
+  public decimal AccountBalance
+  {
+    get
+    {
+      return _accountBalance;
+    }
+  }
+
+  public string AccountType
+  {
+    get
+    {
+      return _accountType;
+    }
+  }
+
+  public DateTime DateCreated
+  {
+    get
+    {
+      return _dateCreated;
+    }
+  }
+  
+  public List<Transaction> Transactions
+  {
+    get
+    {
+      return _transactions;
+    }
+  }
+
+  public bool Deposit(decimal amount, string transactionId)
   {
     if (amount <= 0)
     {
       return false;
     }
     _accountBalance += amount;
-    DateTime today = DateTime.Now;
-    Transaction newTransaction = new Transaction("xxx103", "Deposit", amount, today, "Cash Deposit", _accountBalance);
+    Transaction newTransaction = new Transaction(transactionId, "Deposit", amount, "Cash Deposit", _accountBalance);
     AddTransaction(newTransaction);
     return true;
   }
 
-  public bool Withdraw(decimal amount)
+  public bool Withdraw(decimal amount, string transactionId)
   {
     if (amount <= 0)
     {
@@ -48,8 +95,7 @@ public class Account
       return false;
     }
     _accountBalance -= amount;
-    DateTime today = DateTime.Now;
-    Transaction newTransaction = new Transaction("xxx104", "Withdraw", amount, today, "Withdrawal", _accountBalance);
+    Transaction newTransaction = new Transaction(transactionId, "Withdraw", amount, "Withdrawal", _accountBalance);
     AddTransaction(newTransaction);
     return true;
   }
@@ -117,8 +163,8 @@ public class Account
 
   private void ValidateAccountType(string accountType)
   {
-    string[] allowedAccountType = { "savings", "current" };
-    if (!allowedAccountType.Contains(accountType.ToLower()))
+    string[] allowedAccountType = { "Savings", "Current" };
+    if (!allowedAccountType.Any(type => type.Equals(accountType, StringComparison.OrdinalIgnoreCase)))
     {
       throw new ArgumentException($"Invalid Account Type. Allowed: {string.Join(',', allowedAccountType)}");
     }

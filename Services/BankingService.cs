@@ -4,17 +4,27 @@ using System;
 
 public class BankingService
 {
-  private List<Customer> _customers = new List<Customer>();
+  private List<Customer> _customers;
+  private Random _random = new Random();
+  private JsonStorage _storage;
 
-  Random random = new Random();
+  public BankingService() { }
+  
+  public BankingService(JsonStorage storage)
+  {
+    _storage = storage;
+    _customers = _storage.Load();
+  }
+
 
   public Customer CreateCustomer(string firstName, string lastName, string phoneNumber, string email, Address address, string middleName = "")
   {
     ValidateUniquePhoneNumber(phoneNumber);
     ValidateUniqueEmail(email);
     string customerId = GenerateCustomerId();
-    Customer customer = new Customer(customerId, firstName, lastName, phoneNumber, email, address, middleName);
+    Customer customer = new Customer(customerId, firstName, lastName, phoneNumber, email, address, DateTime.Now, middleName);
     AddCustomer(customer);
+    SaveData();
     return customer;
   }
 
@@ -29,19 +39,20 @@ public class BankingService
     string customerAccountNumber = GenerateAccountNumber();
     Account newAccount = new Account(customerAccountNumber, accountPin, accountType);
     customer.AddAccount(newAccount);
+    SaveData();
     return newAccount;
   }
 
   public void Deposit(string accountNumber, decimal amount)
   {
     Account account = GetAccountByNumber(accountNumber);
-    account.Deposit(amount);
+    account.Deposit(amount, "");
   }
 
   public void Withdraw(string accountNumber, decimal amount)
   {
     Account account = GetAccountByNumber(accountNumber);
-    account.Withdraw(amount);
+    account.Withdraw(amount, "");
   }
 
   public Customer FindCustomerByPhoneNumber(string phoneNumber)
@@ -66,7 +77,7 @@ public class BankingService
       customerId += year;
       for (int i = 0; i < 4; i++)
       {
-        string randomNumber = random.Next(0, 10).ToString();
+        string randomNumber = _random.Next(0, 10).ToString();
         customerId += randomNumber;
       }
     } while (CustomerIdExists(customerId));
@@ -81,7 +92,7 @@ public class BankingService
       accountNumber = "0";
       for (int i = 0; i < 9; i++)
       {
-        accountNumber += random.Next(0, 10);
+        accountNumber += _random.Next(0, 10);
       }
     } while (AccountNumberExists(accountNumber));
     return accountNumber;
@@ -170,11 +181,43 @@ public class BankingService
   {
     foreach (Account account in customer.GetAccounts())
     {
-      if (account.GetAccountType() == accountType.ToLower())
+      if (account.GetAccountType().Equals(accountType, StringComparison.OrdinalIgnoreCase))
       {
         return true;
       }
     }
     return false;
+  }
+
+  private void SaveData()
+  {
+    _storage.Save(_customers);
+  }
+
+  private string GenerateTransactionId()
+  {
+    int maxNumber = 0;
+    string transactionId = "TXN-";
+    string today = $"{DateTime.Now.ToString("yyyyMMdd")}-";
+    transactionId += today;
+
+    foreach (Customer customer in _customers)
+    {
+      foreach (Account account in customer.GetAccounts())
+      {
+        foreach (Transaction transaction in account.Transactions)
+        {
+          string[] splittedTransactionId = transaction.TransactionId.Split('-');
+          int lastSequence = int.Parse(splittedTransactionId[2]);
+          if (lastSequence > maxNumber)
+          {
+            maxNumber = lastSequence;
+          }
+        }
+      }
+    }
+    maxNumber++;
+    transactionId += $"{maxNumber:D4}";
+    return transactionId;
   }
 }

@@ -20,3 +20,5 @@ obj/
 # OS files
 .DS_Store
 Thumbs.db
+
+Data/bank.json

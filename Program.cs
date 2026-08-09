@@ -6,7 +6,8 @@ class Program
 {
   static void Main(string[] args)
   {
-    BankingService bankingService = new BankingService();
+    JsonStorage jsonStorage = new JsonStorage();
+    BankingService bankingService = new BankingService(jsonStorage);
 
     Console.WriteLine("====================================================");
     Console.WriteLine("WELCOME TO C# BANK");

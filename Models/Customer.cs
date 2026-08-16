@@ -13,10 +13,10 @@ public class Customer
   private string _phoneNumber;
   private string _email;
   private Address _address;
-  private List<Account> _accounts = new List<Account>();
+  private List<Account> _accounts;
   private DateTime _dateRegistered;
   [JsonConstructor]
-  public Customer(string customerId, string firstName, string lastName, string phoneNumber, string email, Address address, DateTime dateRegistered, string middleName = "")
+  public Customer(string customerId, string firstName, string lastName, string phoneNumber, string email, Address address, DateTime dateRegistered, List<Account> accounts, string middleName = "")
   {
     _customerId = customerId;
     ValidateName(firstName, "First Name");
@@ -30,6 +30,7 @@ public class Customer
     ValidateEmail(email);
     _email = email;
     _address = address;
+    _accounts = accounts ?? new List<Account>();
     _dateRegistered =  dateRegistered;
   }
 

@@ -11,14 +11,14 @@ public class Transaction
   private decimal _balanceAfterTransaction;
   private DateTime _transactionDate;
 
-  public Transaction(string transactionId, string transactionType, decimal amount, string description, decimal balanceAfterTransaction, DateTime? transactionDate = null)
+  public Transaction(string transactionId, string transactionType, decimal amount, string description, decimal balanceAfterTransaction, DateTime transactionDate)
   {
     _transactionId = transactionId;
     _transactionType = transactionType;
     _amount = amount;
     _description = description;
     _balanceAfterTransaction = balanceAfterTransaction;
-    _transactionDate = transactionDate ?? DateTime.Now;
+    _transactionDate = transactionDate;
   }
   
   public string TransactionId

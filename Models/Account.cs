@@ -11,17 +11,18 @@ public class Account
   private decimal _accountBalance;
   private string _accountType;
   private DateTime _dateCreated;
-  private List<Transaction> _transactions = new List<Transaction>();
+  private List<Transaction> _transactions;
 
-  public Account(string accountNumber, string accountPin, string accountType, DateTime? dateCreated = null)
+  public Account(string accountNumber, string accountPin, decimal accountBalance, string accountType, List<Transaction> transactions, DateTime dateCreated)
   {
     _accountNumber = accountNumber;
     ValidatePin(accountPin);
     _accountPin = accountPin;
-    _accountBalance = 0;
+    _accountBalance = accountBalance;
     ValidateAccountType(accountType);
     _accountType = accountType;
-    _dateCreated = dateCreated ?? DateTime.Now;
+    _transactions = transactions ?? new List<Transaction>();
+    _dateCreated = dateCreated;
   }
 
   public string AccountNumber
@@ -72,32 +73,30 @@ public class Account
     }
   }
 
-  public bool Deposit(decimal amount, string transactionId)
+  public void Deposit(decimal amount, string transactionId)
   {
     if (amount <= 0)
     {
-      return false;
+      throw new ArgumentException("Amount should be greater than $0");
     }
     _accountBalance += amount;
-    Transaction newTransaction = new Transaction(transactionId, "Deposit", amount, "Cash Deposit", _accountBalance);
+    Transaction newTransaction = new Transaction(transactionId, "Deposit", amount, "Cash Deposit", _accountBalance, DateTime.Now);
     AddTransaction(newTransaction);
-    return true;
   }
 
-  public bool Withdraw(decimal amount, string transactionId)
+  public void Withdraw(decimal amount, string transactionId)
   {
     if (amount <= 0)
     {
-      return false;
+      throw new ArgumentException("Invalid amount. Withdrawal amount cannot be zero or negative");
     }
     if (amount > _accountBalance)
     {
-      return false;
+      throw new ArgumentException("Insufficient funds. Withdrawal amount exceeds your account balance");
     }
     _accountBalance -= amount;
-    Transaction newTransaction = new Transaction(transactionId, "Withdraw", amount, "Withdrawal", _accountBalance);
+    Transaction newTransaction = new Transaction(transactionId, "Withdraw", amount, "Withdrawal", _accountBalance, DateTime.Now);
     AddTransaction(newTransaction);
-    return true;
   }
 
   public void ChangePin(string newPin)

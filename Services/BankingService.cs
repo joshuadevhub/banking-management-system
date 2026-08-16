@@ -22,7 +22,7 @@ public class BankingService
     ValidateUniquePhoneNumber(phoneNumber);
     ValidateUniqueEmail(email);
     string customerId = GenerateCustomerId();
-    Customer customer = new Customer(customerId, firstName, lastName, phoneNumber, email, address, DateTime.Now, middleName);
+    Customer customer = new Customer(customerId, firstName, lastName, phoneNumber, email, address, DateTime.Now, new List<Account>(), middleName);
     AddCustomer(customer);
     SaveData();
     return customer;
@@ -37,7 +37,7 @@ public class BankingService
       throw new ArgumentException($"Customer already owns a {accountType} account.");
     }
     string customerAccountNumber = GenerateAccountNumber();
-    Account newAccount = new Account(customerAccountNumber, accountPin, accountType);
+    Account newAccount = new Account(customerAccountNumber, accountPin, 0, accountType, new List<Transaction>(), DateTime.Now);
     customer.AddAccount(newAccount);
     SaveData();
     return newAccount;
@@ -46,13 +46,18 @@ public class BankingService
   public void Deposit(string accountNumber, decimal amount)
   {
     Account account = GetAccountByNumber(accountNumber);
-    account.Deposit(amount, "");
+    string transactionId = GenerateTransactionId();
+    account.Deposit(amount, transactionId);
+    SaveData();
   }
 
   public void Withdraw(string accountNumber, decimal amount)
   {
     Account account = GetAccountByNumber(accountNumber);
-    account.Withdraw(amount, "");
+    string transactionId = GenerateTransactionId();
+    Console.WriteLine(account.GetAccountBalance());
+    account.Withdraw(amount, transactionId);
+    SaveData();
   }
 
   public Customer FindCustomerByPhoneNumber(string phoneNumber)

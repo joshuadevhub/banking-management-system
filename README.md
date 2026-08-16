@@ -14,7 +14,7 @@ The project was built as a personal software engineering project to strengthen C
 - Register new customers.
 - Validate customer information (name, phone number, and email).
 - Prevent duplicate phone numbers and email addresses.
-- View customer information.
+- View customer information
 
 ### Account Management
 - Open Savings and Current accounts.
@@ -22,11 +22,14 @@ The project was built as a personal software engineering project to strengthen C
 - Generate unique customer IDs.
 - Generate unique account numbers.
 - View account information.
+- Persist account information to JSON.
 
 ### Transactions
 - Deposit funds into an account.
 - Withdraw funds from an account.
+- Generate unique transaction IDs.
 - Record every transaction.
+- Persist transaction records to JSON.
 - View transaction history.
 - Display current account balance after each transaction.
 
@@ -42,14 +45,15 @@ The project was built as a personal software engineering project to strengthen C
 ```text
 BankingManagementSystem/
 ├── Data/
-│   └── bank.json
+│   └── bank.json       # Runtime Data, ignored by Git
 ├── Models/
 │   ├── Account.cs
 │   ├── Address.cs
 │   ├── Customer.cs
 │   ├── Transaction.cs
 ├── Services/
-│   └── BankingService.cs
+│   ├── BankingService.cs
+│   ├── JsonStorage.cs
 ├── Program.cs
 ├── BankingManagementSystem.csproj
 ├── .gitignore
@@ -59,8 +63,8 @@ BankingManagementSystem/
 ### Folder Description
 
 - **Models/** - Contains the core classes that represent the banking system, including customers, accounts, addresses, and transactions.
-- **Services/** - Contains the business logic responsible for managing customers, accounts, and banking operations.
-- **Data/** - Stores application data. This folder is prepared for JSON data persistence.
+- **Services/** - Contains the business logic and data persistence services responsible for managing banking operations and saving/loading data
+- **Data/** - Stores runtime application data in JSON format. The bank.json file is excluded from version control through .gitignore.
 - **Program.cs** - The entry point of the application that provides the console-based user interface.
 
 
@@ -102,9 +106,26 @@ BankingManagementSystem/
 
 ## Current Version
 
+### Version 2.0 - In Progress
+
+Implemented so far:
+
+- Refactored `Program.cs`
+- JSON data persistence
+- JSON data loading
+- Unique transaction ID generation
+- Persistent transaction history
+- Account balance persistence
+
+Planned:
+
+- Account-to-account transfers
+- PIN verification
+- Further code organization and improvements
+
 ### Version 1.0
 
-Implemented features include:
+Version 1 established the core banking functionality, including:
 
 - Customer registration
 - Account creation
@@ -116,18 +137,6 @@ Implemented features include:
 - Input validation
 - Exception handling
 
-
-## Roadmap
-
-### Version 2 (Planned)
-
-- Refactor `Program.cs`
-- Save and load data using JSON
-- Generate unique transaction IDs
-- Implement account-to-account transfers
-- Add PIN verification
-- Implement PIN change functionality
-- Improve code organization
 
 ### Future Versions
 

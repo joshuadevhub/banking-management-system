@@ -51,11 +51,11 @@ public class BankingService
     SaveData();
   }
 
-  public void Withdraw(string accountNumber, decimal amount)
+  public void Withdraw(string accountNumber, decimal amount, string pin)
   {
     Account account = GetAccountByNumber(accountNumber);
+    VerifyPin(account, pin);
     string transactionId = GenerateTransactionId();
-    Console.WriteLine(account.GetAccountBalance());
     account.Withdraw(amount, transactionId);
     SaveData();
   }
@@ -224,5 +224,13 @@ public class BankingService
     maxNumber++;
     transactionId += $"{maxNumber:D4}";
     return transactionId;
+  }
+
+  private void VerifyPin(Account account, string pin)
+  {
+    if (account.IsPinValid(pin) == false)
+    {
+      throw new UnauthorizedAccessException("The PIN you entered is not correct");
+    }
   }
 }

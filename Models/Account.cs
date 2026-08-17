@@ -127,7 +127,7 @@ public class Account
 
   public string GetTransactionHistory()
   {
-    if(_transactions.Count <= 0)
+    if (_transactions.Count <= 0)
     {
       return "No Transaction Record at the moment";
     }
@@ -137,6 +137,15 @@ public class Account
       transactions += transaction.GetTransactionDetails();
     }
     return transactions;
+  }
+  
+  public bool IsPinValid(string pin)
+  {
+    if (_accountPin != pin)
+    {
+      return false;
+    }
+    return true;
   }
   
   private void AddTransaction(Transaction transaction)

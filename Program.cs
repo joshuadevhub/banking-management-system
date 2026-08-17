@@ -165,12 +165,12 @@ class Program
     DisplaySectionHeading("Withdraw");
 
     string accountNumber = PromptString("Enter Account Number");
-
     decimal withdrawalAmount = PromptDecimal("Enter Withdrawal Amount", "$");
+    string accountPin = PromptString("Enter your 4-digit account PIN to continue");
     try
     {
       Account account = bankingService.GetAccountByNumber(accountNumber);
-      bankingService.Withdraw(accountNumber, withdrawalAmount);
+      bankingService.Withdraw(accountNumber, withdrawalAmount, accountPin);
       Console.WriteLine();
       Console.WriteLine("=========================================");
       Console.WriteLine("      WITHDRAWAL SUCCESSFUL");

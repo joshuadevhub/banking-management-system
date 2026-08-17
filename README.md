@@ -34,7 +34,7 @@ The project was built as a personal software engineering project to strengthen C
 - Display current account balance after each transaction.
 
 ### Validation and Error Handling
-- Validate account PINs.
+- Verify account PINs before withdrawal operations.
 - Validate account types.
 - Handle invalid operations using exceptions.
 - Display meaningful error messages to the user.
@@ -111,16 +111,16 @@ BankingManagementSystem/
 Implemented so far:
 
 - Refactored `Program.cs`
-- JSON data persistence
-- JSON data loading
+- JSON data loading and persistence
 - Unique transaction ID generation
 - Persistent transaction history
 - Account balance persistence
+- PIN verification for withdrawal operations
 
 Planned:
 
 - Account-to-account transfers
-- PIN verification
+- Secure PIN hashing
 - Further code organization and improvements
 
 ### Version 1.0

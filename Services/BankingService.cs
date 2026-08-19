@@ -60,8 +60,51 @@ public class BankingService
     SaveData();
   }
 
+  public void Transfer(string senderAccountNumber, string receiverAccountNumber, decimal amount, string pin)
+  {
+    Account senderAccount = GetAccountByNumber(senderAccountNumber, "Sender's");
+    Account receiverAccount = GetAccountByNumber(receiverAccountNumber, "Receiver's");
+
+    if (senderAccount.AccountNumber == receiverAccount.AccountNumber)
+    {
+      throw new InvalidOperationException("Sender and receiver account cannot be the same");
+    }
+
+    if (amount < 1)
+    {
+      throw new ArgumentException("Amount is below the minimum allowed transfer of $1");
+    }
+    
+    if(amount > 8000)
+    {
+      throw new ArgumentException("Amount exceed the maximum allowed transfer limit of $8000");
+    }
+
+    if (senderAccount.AccountBalance < amount)
+    {
+      throw new InvalidOperationException("Insufficient balance for transfer");
+    }
+
+    VerifyPin(senderAccount, pin);
+    Customer receiver = FindCustomerByAccountNumber(receiverAccountNumber);
+    Customer sender = FindCustomerByAccountNumber(senderAccountNumber);
+
+    string senderTransactionId = GenerateTransactionId();
+    string senderDescription = $"Transfer to {receiver.FirstName} {receiver.LastName} {MaskedNumber(receiverAccount.AccountNumber)}";
+
+    senderAccount.Withdraw(amount, senderTransactionId, senderDescription);
+
+    string receiverTransactionId = GenerateTransactionId();
+    string receiverDescription = $"Transfer from {sender.FirstName} {sender.LastName} {MaskedNumber(senderAccount.AccountNumber)}";
+
+    receiverAccount.Deposit(amount, receiverTransactionId, receiverDescription);
+
+    SaveData();
+  }
+
   public Customer FindCustomerByPhoneNumber(string phoneNumber)
   {
+    string maskedPhoneNumber = MaskedNumber(phoneNumber);
     foreach (Customer customer in _customers)
     {
       if (customer.GetPhoneNumber() == phoneNumber)
@@ -69,7 +112,30 @@ public class BankingService
         return customer;
       }
     }
-    throw new ArgumentException($"Customer with this phone number '{phoneNumber}' was not found");
+    throw new ArgumentException($"Customer with this phone number '{maskedPhoneNumber}' was not found");
+  }
+
+  public Customer FindCustomerByAccountNumber(string accountNumber)
+  {
+    string maskedAccountNumber = MaskedNumber(accountNumber);
+    foreach (Customer customer in _customers)
+    {
+      foreach (Account account in customer.Accounts)
+      {
+        if (account.AccountNumber == accountNumber)
+        {
+          return customer;
+        }
+      }
+    }
+    throw new ArgumentException($"Customer with this account number '{maskedAccountNumber}' was not found");
+  }
+
+  public string MaskedNumber(string number)
+  {
+    string firstFourNumber = number.Substring(0, 4);
+    string lastFourNumber = number.Substring(number.Length - 4);
+    return $"{firstFourNumber}****{lastFourNumber}";
   }
 
   private string GenerateCustomerId()
@@ -103,7 +169,7 @@ public class BankingService
     return accountNumber;
   }
 
-  public Account GetAccountByNumber(string accountNumber)
+  public Account GetAccountByNumber(string accountNumber, string fieldName = "")
   {
     foreach (Customer customer in _customers)
     {
@@ -113,7 +179,7 @@ public class BankingService
         return account;
       }
     }
-    throw new ArgumentException("Invalid account number. Account does not exist");
+    throw new ArgumentException($"Invalid account number. {fieldName} Account does not exist");
   }
   
   private bool AccountNumberExists(string accountNumber)
@@ -150,11 +216,12 @@ public class BankingService
 
   private void ValidateUniquePhoneNumber(string phoneNumber)
   {
+    string maskedPhoneNumber = MaskedNumber(phoneNumber);
     foreach (Customer customer in _customers)
     {
       if (customer.GetPhoneNumber() == phoneNumber)
       {
-        throw new ArgumentException("A customer with this phone number already exists.");
+        throw new ArgumentException($"A customer with this phone number {maskedPhoneNumber} already exists.");
       }
     }
   }

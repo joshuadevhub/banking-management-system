@@ -73,18 +73,18 @@ public class Account
     }
   }
 
-  public void Deposit(decimal amount, string transactionId)
+  public void Deposit(decimal amount, string transactionId, string description = "Deposit")
   {
     if (amount <= 0)
     {
       throw new ArgumentException("Amount should be greater than $0");
     }
     _accountBalance += amount;
-    Transaction newTransaction = new Transaction(transactionId, "Deposit", amount, "Cash Deposit", _accountBalance, DateTime.Now);
+    Transaction newTransaction = new Transaction(transactionId, "Credit", amount, description, _accountBalance, DateTime.Now);
     AddTransaction(newTransaction);
   }
 
-  public void Withdraw(decimal amount, string transactionId)
+  public void Withdraw(decimal amount, string transactionId, string description = "Withdrawal")
   {
     if (amount <= 0)
     {
@@ -95,7 +95,7 @@ public class Account
       throw new ArgumentException("Insufficient funds. Withdrawal amount exceeds your account balance");
     }
     _accountBalance -= amount;
-    Transaction newTransaction = new Transaction(transactionId, "Withdraw", amount, "Withdrawal", _accountBalance, DateTime.Now);
+    Transaction newTransaction = new Transaction(transactionId, "Debit", amount, description, _accountBalance, DateTime.Now);
     AddTransaction(newTransaction);
   }
 
@@ -148,7 +148,7 @@ public class Account
     return true;
   }
   
-  private void AddTransaction(Transaction transaction)
+  public void AddTransaction(Transaction transaction)
   {
     _transactions.Add(transaction);
   }

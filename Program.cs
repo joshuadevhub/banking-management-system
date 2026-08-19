@@ -1,6 +1,7 @@
 ﻿#nullable disable
 
 using System;
+using System.Linq.Expressions;
 
 class Program
 {
@@ -22,9 +23,10 @@ class Program
       Console.WriteLine("2. Open Account");
       Console.WriteLine("3. Deposit");
       Console.WriteLine("4. Withdraw");
-      Console.WriteLine("5. View Customer Information");
-      Console.WriteLine("6. View Account Information");
-      Console.WriteLine("7. View Transaction History");
+      Console.WriteLine("5. Transfer");
+      Console.WriteLine("6. View Customer Information");
+      Console.WriteLine("7. View Account Information");
+      Console.WriteLine("8. View Transaction History");
       Console.WriteLine("0. Exit");
 
       Console.Write("Please choose from the options above to continue our banking service: ");
@@ -36,9 +38,9 @@ class Program
         continue;
       }
 
-      if (userResponse < 0 || userResponse > 7)
+      if (userResponse < 0 || userResponse > 8)
       {
-        Console.WriteLine("Invalid Option. Input must be between 0 and 7");
+        Console.WriteLine("Invalid Option. Input must be between 0 and 8");
         continue;
       }
 
@@ -61,14 +63,18 @@ class Program
           break;
 
         case 5:
-          ViewCustomerInformation(bankingService);
+          Transfer(bankingService);
           break;
 
         case 6:
-          ViewAccountInformation(bankingService);
+          ViewCustomerInformation(bankingService);
           break;
 
         case 7:
+          ViewAccountInformation(bankingService);
+          break;
+
+        case 8:
           ViewTransactionHistory(bankingService);
           break;
       }
@@ -179,6 +185,41 @@ class Program
       Console.WriteLine($"Current Balance  : ${account.GetAccountBalance():N2}");
       Console.WriteLine();
       Console.WriteLine("Your account has been debited successfully.");
+      Console.WriteLine("Thank you for banking with C# Bank.");
+      Console.WriteLine("=========================================");
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine(ex.Message);
+    }
+  }
+
+  static void Transfer(BankingService bankingService)
+  {
+    DisplaySectionHeading("Withdraw");
+
+    try
+    {
+      string senderAccountNumber = PromptString("Enter your account number");
+      string receiverAccountNumber = PromptString("Enter Receiver's account number");
+      decimal amount = PromptDecimal("Enter Amount to Transfer", "$");
+      string accountPin = PromptString("Enter your 4-digit account PIN to continue");
+
+      Account senderAccount = bankingService.GetAccountByNumber(senderAccountNumber);
+      Customer receiver = bankingService.FindCustomerByAccountNumber(receiverAccountNumber);
+      string maskedReceiverAccount = bankingService.MaskedNumber(receiverAccountNumber);
+
+      bankingService.Transfer(senderAccountNumber, receiverAccountNumber, amount, accountPin);
+
+      Console.WriteLine();
+      Console.WriteLine("=========================================");
+      Console.WriteLine("      Transfer SUCCESSFUL");
+      Console.WriteLine("=========================================");
+      Console.WriteLine($"Amount Transferred : ${amount:N2}");
+      Console.WriteLine($"Transferred To : {receiver.FirstName} {receiver.LastName}");
+      Console.WriteLine($"Current Balance  : ${senderAccount.AccountBalance:N2}");
+      Console.WriteLine();
+      Console.WriteLine($"Transfer to '{maskedReceiverAccount}' was successful.");
       Console.WriteLine("Thank you for banking with C# Bank.");
       Console.WriteLine("=========================================");
     }

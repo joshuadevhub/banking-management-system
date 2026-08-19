@@ -116,10 +116,10 @@ Implemented so far:
 - Persistent transaction history
 - Account balance persistence
 - PIN verification for withdrawal operations
+- Account-to-account transfers
 
 Planned:
 
-- Account-to-account transfers
 - Secure PIN hashing
 - Further code organization and improvements
 

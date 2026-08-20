@@ -34,11 +34,6 @@ public class Customer
     _dateRegistered =  dateRegistered;
   }
 
-  public string GetCustomerId()
-  {
-    return _customerId;
-  }
-
   public string CustomerId
   {
     get
@@ -111,16 +106,6 @@ public class Customer
     }
   }
 
-  public string GetPhoneNumber()
-  {
-    return _phoneNumber;
-  }
-
-  public string GetEmail()
-  {
-    return _email;
-  }
-
   public void AddAccount(Account account)
   {
     _accounts.Add(account);
@@ -147,7 +132,7 @@ public class Customer
   {
     foreach (Account account in _accounts)
     {
-      if (account.GetAccountNumber() == accountNumber)
+      if (account.AccountNumber == accountNumber)
       {
         return account;
       }
@@ -158,11 +143,6 @@ public class Customer
   public string GetCustomerInfo()
   {
     return $"Customer ID: {_customerId}\nFirst Name: {_firstName}\nMiddle Name: {_middleName}\nLast Name: {_lastName}\nPhone Number: {_phoneNumber}\nEmail: {_email}\nAddress: {_address.GetFullAddress()}\nDate Registered: {_dateRegistered:g}";
-  }
-
-  public List<Account> GetAccounts()
-  {
-    return _accounts;
   }
 
   private void ValidatePhoneNumber(string phoneNumber)

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BC = BCrypt.Net.BCrypt;
+using System.Text;
 
 public class Account
 {
@@ -99,27 +100,6 @@ public class Account
     AddTransaction(newTransaction);
   }
 
-  public void ChangePin(string newPin)
-  {
-    ValidatePin(newPin);
-    _accountPin = newPin;
-  }
-
-  public string GetAccountNumber()
-  {
-    return _accountNumber;
-  }
-
-  public string GetAccountType()
-  {
-    return _accountType;
-  }
-
-  public decimal GetAccountBalance()
-  {
-    return _accountBalance;
-  }
-
   public string GetAccountInfo()
   {
     return $"Account Number: {_accountNumber}\nAccount Balance: ${_accountBalance:N2}\nAccount Type: {_accountType}\nDate Created: {_dateCreated:g}";
@@ -127,16 +107,16 @@ public class Account
 
   public string GetTransactionHistory()
   {
-    if (_transactions.Count <= 0)
+    if (_transactions.Count == 0)
     {
       return "No Transaction Record at the moment";
     }
-    string transactions = "";
+    StringBuilder transactions = new StringBuilder();
     foreach (Transaction transaction in _transactions)
     {
-      transactions += transaction.GetTransactionDetails();
+      transactions.Append(transaction.GetTransactionDetails());
     }
-    return transactions;
+    return transactions.ToString();
   }
 
   public bool IsPinValid(string pin)

@@ -105,7 +105,7 @@ class Program
       Address customerAddress = new Address(houseNumber, street, city, state, country);
       Customer customer = bankingService.CreateCustomer(firstName, lastName, phoneNumber, email, customerAddress, middleName);
       Console.WriteLine("\nCustomer registered successfully!");
-      Console.WriteLine($"Customer ID: {customer.GetCustomerId()}");
+      Console.WriteLine($"Customer ID: {customer.CustomerId}");
     }
     catch (Exception ex)
     {
@@ -127,10 +127,10 @@ class Program
     try
     {
       Customer customer = bankingService.FindCustomerByPhoneNumber(customerPhoneNumber);
-      string customerId = customer.GetCustomerId();
+      string customerId = customer.CustomerId;
       Account account = bankingService.OpenAccount(customerId, accountType, accountPin);
       Console.WriteLine("\nAccount Created successfully!");
-      Console.WriteLine($"Account Number: {account.GetAccountNumber()}");
+      Console.WriteLine($"Account Number: {account.AccountNumber}");
     }
     catch (Exception ex)
     {
@@ -154,7 +154,7 @@ class Program
       Console.WriteLine("      DEPOSIT SUCCESSFUL");
       Console.WriteLine("=========================================");
       Console.WriteLine($"Amount Deposited : ${amount:N2}");
-      Console.WriteLine($"Current Balance  : ${customerAccount.GetAccountBalance():N2}");
+      Console.WriteLine($"Current Balance  : ${customerAccount.AccountBalance:N2}");
       Console.WriteLine();
       Console.WriteLine("Your account has been credited successfully.");
       Console.WriteLine("Thank you for banking with C# Bank.");
@@ -182,7 +182,7 @@ class Program
       Console.WriteLine("      WITHDRAWAL SUCCESSFUL");
       Console.WriteLine("=========================================");
       Console.WriteLine($"Amount Withdrawn : ${withdrawalAmount:N2}");
-      Console.WriteLine($"Current Balance  : ${account.GetAccountBalance():N2}");
+      Console.WriteLine($"Current Balance  : ${account.AccountBalance:N2}");
       Console.WriteLine();
       Console.WriteLine("Your account has been debited successfully.");
       Console.WriteLine("Thank you for banking with C# Bank.");

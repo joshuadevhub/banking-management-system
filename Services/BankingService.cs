@@ -1,6 +1,7 @@
 #nullable disable
 
 using System;
+using System.Linq;
 
 public class BankingService
 {
@@ -106,30 +107,23 @@ public class BankingService
   public Customer FindCustomerByPhoneNumber(string phoneNumber)
   {
     string maskedPhoneNumber = MaskedNumber(phoneNumber);
-    foreach (Customer customer in _customers)
+    Customer customer = _customers.FirstOrDefault(c => c.PhoneNumber == phoneNumber);
+    if (customer == null)
     {
-      if (customer.GetPhoneNumber() == phoneNumber)
-      {
-        return customer;
-      }
+      throw new ArgumentException($"Customer with this phone number '{maskedPhoneNumber}' was not found");
     }
-    throw new ArgumentException($"Customer with this phone number '{maskedPhoneNumber}' was not found");
+    return customer;
   }
 
   public Customer FindCustomerByAccountNumber(string accountNumber)
   {
     string maskedAccountNumber = MaskedNumber(accountNumber);
-    foreach (Customer customer in _customers)
+    Customer customer = _customers.FirstOrDefault(c => c.Accounts.Any(a => a.AccountNumber == accountNumber));
+    if (customer == null)
     {
-      foreach (Account account in customer.Accounts)
-      {
-        if (account.AccountNumber == accountNumber)
-        {
-          return customer;
-        }
-      }
+      throw new ArgumentException($"Customer with this account number '{maskedAccountNumber}' was not found");
     }
-    throw new ArgumentException($"Customer with this account number '{maskedAccountNumber}' was not found");
+    return customer;
   }
 
   public string MaskedNumber(string number)
@@ -185,29 +179,12 @@ public class BankingService
   
   private bool AccountNumberExists(string accountNumber)
   {
-    foreach (Customer customer in _customers)
-    {
-      foreach (Account account in customer.GetAccounts())
-      {
-        if (account.GetAccountNumber() == accountNumber)
-        {
-          return true;
-        }
-      }
-    }
-    return false;
+    return _customers.Any(c => c.Accounts.Any(a => a.AccountNumber == accountNumber));
   }
 
   private bool CustomerIdExists(string customerId)
   {
-    foreach (Customer customer in _customers)
-    {
-      if (customer.GetCustomerId() == customerId)
-      {
-        return true;
-      }
-    }
-    return false;
+    return _customers.Any(c => c.CustomerId == customerId);
   }
 
   private void AddCustomer(Customer customer)
@@ -218,48 +195,35 @@ public class BankingService
   private void ValidateUniquePhoneNumber(string phoneNumber)
   {
     string maskedPhoneNumber = MaskedNumber(phoneNumber);
-    foreach (Customer customer in _customers)
+    bool phoneNumberExists = _customers.Any(c => c.PhoneNumber == phoneNumber);
+    if (phoneNumberExists)
     {
-      if (customer.GetPhoneNumber() == phoneNumber)
-      {
-        throw new ArgumentException($"A customer with this phone number {maskedPhoneNumber} already exists.");
-      }
+      throw new ArgumentException($"A customer with this phone number {maskedPhoneNumber} already exists.");
     }
   }
 
   private void ValidateUniqueEmail(string email)
   {
-    foreach (Customer customer in _customers)
+    bool emailExists = _customers.Any(c => c.Email == email);
+    if (emailExists)
     {
-      if (customer.GetEmail() == email)
-      {
-        throw new ArgumentException("A customer with this email address already exists.");
-      }
+      throw new ArgumentException("A customer with this email address already exists.");
     }
   }
 
   private Customer GetCustomerById(string customerId)
   {
-    foreach (Customer customer in _customers)
+    Customer customer = _customers.FirstOrDefault(c => c.CustomerId == customerId);
+    if (customer == null)
     {
-      if (customer.GetCustomerId() == customerId)
-      {
-        return customer;
-      }
+      throw new ArgumentException("Customer not found");
     }
-    throw new ArgumentException("Customer not found");
+    return customer;
   }
 
   private bool CustomerHasAccountType(Customer customer, string accountType)
   {
-    foreach (Account account in customer.GetAccounts())
-    {
-      if (account.GetAccountType().Equals(accountType, StringComparison.OrdinalIgnoreCase))
-      {
-        return true;
-      }
-    }
-    return false;
+    return customer.Accounts.Any(account => account.AccountType.Equals(accountType, StringComparison.OrdinalIgnoreCase));
   }
 
   private void SaveData()
@@ -276,7 +240,7 @@ public class BankingService
 
     foreach (Customer customer in _customers)
     {
-      foreach (Account account in customer.GetAccounts())
+      foreach (Account account in customer.Accounts)
       {
         foreach (Transaction transaction in account.Transactions)
         {

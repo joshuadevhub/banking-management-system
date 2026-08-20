@@ -34,7 +34,9 @@ The project was built as a personal software engineering project to strengthen C
 - Display current account balance after each transaction.
 
 ### Validation and Error Handling
-- Verify account PINs before withdrawal operations.
+- Validates account PINs
+- Securely hash account PINs using BCrypt.
+- Verify account PINs during withdrawals and transfers.
 - Validate account types.
 - Handle invalid operations using exceptions.
 - Display meaningful error messages to the user.
@@ -117,10 +119,11 @@ Implemented so far:
 - Account balance persistence
 - PIN verification for withdrawal operations
 - Account-to-account transfers
+- PIN verification
+- Secure PIN hashing using BCrypt
 
 Planned:
 
-- Secure PIN hashing
 - Further code organization and improvements
 
 ### Version 1.0

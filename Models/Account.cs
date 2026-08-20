@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BC = BCrypt.Net.BCrypt;
 
 public class Account
 {
@@ -16,7 +17,6 @@ public class Account
   public Account(string accountNumber, string accountPin, decimal accountBalance, string accountType, List<Transaction> transactions, DateTime dateCreated)
   {
     _accountNumber = accountNumber;
-    ValidatePin(accountPin);
     _accountPin = accountPin;
     _accountBalance = accountBalance;
     ValidateAccountType(accountType);
@@ -64,7 +64,7 @@ public class Account
       return _dateCreated;
     }
   }
-  
+
   public List<Transaction> Transactions
   {
     get
@@ -138,22 +138,30 @@ public class Account
     }
     return transactions;
   }
-  
+
   public bool IsPinValid(string pin)
   {
-    if (_accountPin != pin)
+    bool compareHashedPin = BC.Verify(pin, _accountPin);
+    if (!compareHashedPin)
     {
       return false;
     }
     return true;
   }
-  
+
   public void AddTransaction(Transaction transaction)
   {
     _transactions.Add(transaction);
   }
 
-  private void ValidatePin(string pin)
+  public static string ValidateAndHashPin(string pin)
+  {
+    ValidatePin(pin);
+    string hashedPin = BC.HashPassword(pin, workFactor: 12);
+    return hashedPin;
+  }
+  
+  private static void ValidatePin(string pin)
   {
 
     if (pin.Length != 4)

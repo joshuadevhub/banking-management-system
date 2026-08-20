@@ -36,8 +36,9 @@ public class BankingService
     {
       throw new ArgumentException($"Customer already owns a {accountType} account.");
     }
+    string hashedPin = Account.ValidateAndHashPin(accountPin);
     string customerAccountNumber = GenerateAccountNumber();
-    Account newAccount = new Account(customerAccountNumber, accountPin, 0, accountType, new List<Transaction>(), DateTime.Now);
+    Account newAccount = new Account(customerAccountNumber, hashedPin, 0, accountType, new List<Transaction>(), DateTime.Now);
     customer.AddAccount(newAccount);
     SaveData();
     return newAccount;

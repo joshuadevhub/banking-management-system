@@ -67,26 +67,7 @@ public class BankingService
     Account senderAccount = GetAccountByNumber(senderAccountNumber, "Sender's");
     Account receiverAccount = GetAccountByNumber(receiverAccountNumber, "Receiver's");
 
-    if (senderAccount.AccountNumber == receiverAccount.AccountNumber)
-    {
-      throw new InvalidOperationException("Sender and receiver account cannot be the same");
-    }
-
-    if (amount < 1)
-    {
-      throw new ArgumentException("Amount is below the minimum allowed transfer of $1");
-    }
-    
-    if(amount > 8000)
-    {
-      throw new ArgumentException("Amount exceed the maximum allowed transfer limit of $8000");
-    }
-
-    if (senderAccount.AccountBalance < amount)
-    {
-      throw new InvalidOperationException("Insufficient balance for transfer");
-    }
-
+    ValidateTransfer(senderAccount, receiverAccount, amount);
     VerifyPin(senderAccount, pin);
     Customer receiver = FindCustomerByAccountNumber(receiverAccountNumber);
     Customer sender = FindCustomerByAccountNumber(senderAccountNumber);
@@ -133,14 +114,37 @@ public class BankingService
     return $"{firstFourNumber}****{lastFourNumber}";
   }
 
+  private void ValidateTransfer(Account senderAccount, Account receiverAccount, decimal amount)
+  {
+    if (senderAccount.AccountNumber == receiverAccount.AccountNumber)
+    {
+      throw new InvalidOperationException("Sender and receiver account cannot be the same");
+    }
+
+    if (amount < 1)
+    {
+      throw new ArgumentException("Amount is below the minimum allowed transfer of $1");
+    }
+
+    if (amount > 8000)
+    {
+      throw new ArgumentException("Amount exceed the maximum allowed transfer limit of $8000");
+    }
+
+    if (senderAccount.AccountBalance < amount)
+    {
+      throw new InvalidOperationException("Insufficient balance for transfer");
+    }
+  }
+
   private string GenerateCustomerId()
   {
     string customerId;
     do
     {
-      string year = $"{DateTime.Now.Year.ToString()}-";
+      string year = DateTime.Now.Year.ToString();
       customerId = "CUS-";
-      customerId += year;
+      customerId += year + "-";
       for (int i = 0; i < 4; i++)
       {
         string randomNumber = _random.Next(0, 10).ToString();
@@ -234,9 +238,7 @@ public class BankingService
   private string GenerateTransactionId()
   {
     int maxNumber = 0;
-    string transactionId = "TXN-";
-    string today = $"{DateTime.Now.ToString("yyyyMMdd")}-";
-    transactionId += today;
+    string transactionId = "TXN-" + DateTime.Now.ToString("yyyyMMdd") + "-";
 
     foreach (Customer customer in _customers)
     {
@@ -260,7 +262,7 @@ public class BankingService
 
   private void VerifyPin(Account account, string pin)
   {
-    if (account.IsPinValid(pin) == false)
+    if (!account.IsPinValid(pin))
     {
       throw new UnauthorizedAccessException("The PIN you entered is not correct");
     }

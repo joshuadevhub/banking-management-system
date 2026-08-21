@@ -3,7 +3,7 @@
 ## Overview
 The Banking Management System is a console-based application developed in C# to simulate core banking operations. It demonstrates object-oriented programming principles such as encapsulation, abstraction, and separation of responsibilities while providing a simple banking experience through a command-line interface.
 
-The application allows users to register customers, open bank accounts, perform deposits and withdrawals, and view customer, account, and transaction information through a simple command-line interface.
+The application allows users to register customers, open bank accounts, perform deposits and withdrawals, transfer funds between accounts, and view customer, account, and transaction information through a simple command-line interface.
 
 The project was built as a personal software engineering project to strengthen C# programming skills and object-oriented design.
 
@@ -14,7 +14,7 @@ The project was built as a personal software engineering project to strengthen C
 - Register new customers.
 - Validate customer information (name, phone number, and email).
 - Prevent duplicate phone numbers and email addresses.
-- View customer information
+- View customer information.
 
 ### Account Management
 - Open Savings and Current accounts.
@@ -27,17 +27,21 @@ The project was built as a personal software engineering project to strengthen C
 ### Transactions
 - Deposit funds into an account.
 - Withdraw funds from an account.
+- Transfer funds between accounts.
 - Generate unique transaction IDs.
 - Record every transaction.
 - Persist transaction records to JSON.
 - View transaction history.
 - Display current account balance after each transaction.
+- Apply transfer limits and validation.
 
 ### Validation and Error Handling
-- Validates account PINs
+- Validates account PINs.
 - Securely hash account PINs using BCrypt.
 - Verify account PINs during withdrawals and transfers.
 - Validate account types.
+- Validate transfer amounts and account balances.
+- Mask sensitive account and phone numbers in relevant messages.
 - Handle invalid operations using exceptions.
 - Display meaningful error messages to the user.
 
@@ -74,6 +78,8 @@ BankingManagementSystem/
 
 - **Language:** C#
 - **Framework:** .NET Console Application
+- **Libraries:** BCrypt.Net-Next
+- **Data Storage:** JSON
 - **IDE:** Visual Studio Code
 - **Version Control:** Git
 - **Repository Hosting:** GitHub
@@ -106,27 +112,9 @@ BankingManagementSystem/
    ```
 
 
-## Current Version
+## Version History
 
-### Version 2.0 - In Progress
-
-Implemented so far:
-
-- Refactored `Program.cs`
-- JSON data loading and persistence
-- Unique transaction ID generation
-- Persistent transaction history
-- Account balance persistence
-- PIN verification for withdrawal operations
-- Account-to-account transfers
-- PIN verification
-- Secure PIN hashing using BCrypt
-
-Planned:
-
-- Further code organization and improvements
-
-### Version 1.0
+### Version 1.0 - Completed
 
 Version 1 established the core banking functionality, including:
 
@@ -140,6 +128,26 @@ Version 1 established the core banking functionality, including:
 - Input validation
 - Exception handling
 
+### Version 2.0 - Completed
+
+Version 2 focused on improving the security, functionality, and code organization of the banking system.
+
+Implemented:
+
+- Refactored `Program.cs`
+- Improved code organization and readability.
+- Refactored customer and account collection operations using LINQ.
+- Improved transaction history generation using `StringBuilder`.
+- Added JSON data loading and persistence.
+- Added unique transaction ID generation.
+- Added persistent transaction history.
+- Added account balance persistence.
+- Added account PIN validation.
+- Added secure PIN hashing using BCrypt.
+- Added PIN verification for protected account operations.
+- Added account-to-account transfers.
+- Added transfer validation and transfer limits.
+- Added masked display of sensitive account and phone numbers.
 
 ### Future Versions
 
